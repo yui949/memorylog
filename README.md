@@ -162,6 +162,13 @@ MemoryLog(めもろぐ)
 - イベント（何をしたか）
 - 参加（誰がそのイベントにいたか）
 
+## `users`（ユーザー）
+カラム名	データ型	制約	説明
+id	bigint	Primary Key	ユーザーID
+name	text	Not Null	ユーザー名
+email	text	Unique	メール
+created_at	timestamp	Not Null	登録日時
+
 ## `people` (出会った人)
 
 | カラム名 | データ型 | 制約 | 説明 |
