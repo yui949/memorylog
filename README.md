@@ -206,38 +206,3 @@ created_at	timestamp	Not Null	登録日時
 | `event_id` | bigint | Foreign Key (`events.id`) | イベントID |
 | `person_id` | bigint | Foreign Key (`people.id`) | 人ID |
 | `created_at` | timestamp | Not Null (Default: now()) | 登録日時 |
-
----
-
-# ER図イメージ
-
-```
-people
-  ↑
-  │
-event_people
-  │
-  ↓
-events
-```
-
-つまり
-
-```
-人
-   ↑
-誰がいたか
-   ↓
-イベント
-```
-
-例
-
-```
-イベント：ユニバ
-参加者：
-  ・田中
-  ・山田
-  ・佐藤
-```
-
