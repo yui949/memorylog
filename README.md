@@ -155,3 +155,80 @@ MemoryLog(めもろぐ)
 人登録・イベント作成・参加者追加 |
 | **検索性の低さ** | 人名・メモ・場所などから検索できる機能を実装する |
 | **誰のためのアプリか曖昧** | 「人との思い出を記録する個人アプリ」というコンセプトを明確にする |
+
+# DB設計
+
+- 人（誰と会ったか）
+- イベント（何をしたか）
+- 参加（誰がそのイベントにいたか）
+
+## `people` (出会った人)
+
+| カラム名 | データ型 | 制約 | 説明 |
+| --- | --- | --- | --- |
+| `id` | bigint | **Primary Key** | 人ID |
+| `name` | text | Not Null | 名前 |
+| `memo` | text | Nullable | 人物メモ（どこで出会ったなど） |
+| `created_at` | timestamp | Not Null (Default: now()) | 登録日時 |
+| `updated_at` | timestamp | Not Null (Default: now()) | 更新日時 |
+
+---
+
+## `events` (イベント)
+
+| カラム名 | データ型 | 制約 | 説明 |
+| --- | --- | --- | --- |
+| `id` | bigint | **Primary Key** | イベントID |
+| `title` | text | Not Null | イベント名 |
+| `date` | date | Not Null | 日付 |
+| `memo` | text | Nullable | イベントメモ |
+| `created_at` | timestamp | Not Null (Default: now()) | 登録日時 |
+| `updated_at` | timestamp | Not Null (Default: now()) | 更新日時 |
+
+---
+
+## `event_people` (イベント参加者)
+
+※ これが今回のアプリの大事なところ
+
+| カラム名 | データ型 | 制約 | 説明 |
+| --- | --- | --- | --- |
+| `id` | bigint | **Primary Key** | レコードID |
+| `event_id` | bigint | Foreign Key (`events.id`) | イベントID |
+| `person_id` | bigint | Foreign Key (`people.id`) | 人ID |
+| `created_at` | timestamp | Not Null (Default: now()) | 登録日時 |
+
+---
+
+# ER図イメージ
+
+```
+people
+  ↑
+  │
+event_people
+  │
+  ↓
+events
+```
+
+つまり
+
+```
+人
+   ↑
+誰がいたか
+   ↓
+イベント
+```
+
+例
+
+```
+イベント：ユニバ
+参加者：
+  ・田中
+  ・山田
+  ・佐藤
+```
+
