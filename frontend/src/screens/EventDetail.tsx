@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import FloatingButton from "../components/FloatingButton";
 
 type Person = {
   id: number;

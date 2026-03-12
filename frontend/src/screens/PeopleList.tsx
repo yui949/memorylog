@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import FloatingButton from "../components/FloatingButton";
 
 type Person = {
   id: number;
@@ -138,6 +139,7 @@ export default function PeopleList() {
           ))}
         </div>
       </div>
+      <FloatingButton onClick={() => navigate("/people/new")} />
     </>
   );
 }

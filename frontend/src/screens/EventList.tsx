@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer"; 
+import FloatingButton from "../components/FloatingButton";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 type Event = {
@@ -128,6 +130,7 @@ export default function EventList() {
       </div>
 
       <Footer />
+      <FloatingButton onClick={() => navigate("/events/new")} />
     </>
   );
 }
