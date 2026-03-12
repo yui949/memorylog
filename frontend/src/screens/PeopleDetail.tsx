@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
+import { ChevronLeft } from "lucide-react";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Person = {
   id: number;
@@ -16,6 +19,7 @@ export default function PeopleDetail() {
 
   const { id } = useParams();   // URLのid取得
   const [person, setPerson] = useState<Person | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`http://localhost:3000/people/${id}`)
@@ -29,6 +33,17 @@ export default function PeopleDetail() {
 
   return (
     <>
+      <div style={{
+        position: "fixed",
+        top: "70px",
+        left: "20px",
+        zIndex: 1000,
+            cursor: "pointer"
+        }}
+        onClick={() => navigate(-1)}
+       >
+      <ChevronLeft size={28} color="#815D51" />
+     </div>
       <Header />
 
       <div
@@ -71,26 +86,26 @@ export default function PeopleDetail() {
           }}
         >
 
-          <div style={{ marginBottom: "10px"  ,color: "#815D51"}}>
-            MBTI : XXXX
+          <div style={{ marginBottom: "10px", color: "#815D51" }}>
+           MBTI : {person.mbti ?? "未登録"}
           </div>
 
-          <div style={{ marginBottom: "10px" ,color: "#815D51" }}>
-            血液型 : X
+          <div style={{ marginBottom: "10px", color: "#815D51" }}>
+           血液型 : {person.blood_type ?? "未登録"}
           </div>
 
-          <div>
-            メモ : ここにメモ
+          <div style={{ marginBottom: "10px", color: "#815D51" }}>
+           メモ : {person.memo ?? "なし"}
           </div>
 
-          <div>
-           <h3>次話したいこと</h3>
-           <p>{person.next_topic}</p>
+          <div style={{ marginTop: "15px", color: "#815D51" }}>
+           次話したいこと : {person.next_topic ?? "なし"}
           </div>
 
         </div>
 
       </div>
+      
     </>
   );
 }
