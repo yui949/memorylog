@@ -103,7 +103,7 @@ export default function PeopleList() {
                 />
 
                 <div>
-                  <div style={{ fontWeight: "bold" }}>{person.name}</div>
+                  <div style={{ fontWeight: "bold" ,color: "#815D51" }}>{person.name}</div>
 
                   <div
                     style={{

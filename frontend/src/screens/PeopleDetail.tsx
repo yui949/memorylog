@@ -52,7 +52,7 @@ export default function PeopleDetail() {
         />
 
         {/* 名前 */}
-        <h2 style={{ textAlign: "center", marginTop: "20px" }}>
+        <h2 style={{ textAlign: "center", marginTop: "20px" ,color: "#815D51" }}>
           {person.name}
         </h2>
 
@@ -71,11 +71,11 @@ export default function PeopleDetail() {
           }}
         >
 
-          <div style={{ marginBottom: "10px" }}>
+          <div style={{ marginBottom: "10px"  ,color: "#815D51"}}>
             MBTI : XXXX
           </div>
 
-          <div style={{ marginBottom: "10px" }}>
+          <div style={{ marginBottom: "10px" ,color: "#815D51" }}>
             血液型 : X
           </div>
 
