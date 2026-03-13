@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Header from "../components/Header";
 import Footer from "../components/Footer"; 
 import FloatingButton from "../components/FloatingButton";
-import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 type Event = {
@@ -17,54 +16,57 @@ export default function EventList() {
   const [events, setEvents] = useState<Event[]>([]);
   const navigate = useNavigate();
 
- useEffect(() => {
-  fetch("http://localhost:3000/events")
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      setEvents(data);
-    });
-}, []);
+  useEffect(() => {
+    fetch("http://localhost:3000/events")
+      .then(res => res.json())
+      .then(data => setEvents(data))
+  }, [])
 
   return (
-    <>
+    <div style={{ background: "#FFFDF6", minHeight: "100vh" }}>
       <Header />
 
-      {/* PeopleListと同じ余白設定 */}
-      <div style={{ paddingTop: "180px", paddingBottom: "120px", minHeight: "100vh", background: "#FFFDF6" }}>
-
-        {/* 検索バー (PeopleListのスタイルを継承) */}
-        <div
+     {/* 1. 検索バーを画面上部に固定（背景なし・ヘッダーに乗せる） */}
+      <div
+        style={{
+          position: "fixed",
+          top: "60px", // ヘッダーの高さに合わせて微調整してください
+          left: 0,
+          right: 0,
+          padding: "0 20px",
+          display: "flex",
+          justifyContent: "center",
+          zIndex: 10000, // ヘッダーより手前に
+        }}
+      >
+        <input
+          placeholder="検索"
           style={{
-            padding: "0 20px",
-            marginTop: "-120px",
-            display: "flex",
-            justifyContent: "center",
-            position: "relative",
-            zIndex: 20
+            width: "100%",
+            maxWidth: "500px",
+            padding: "12px 20px",
+            borderRadius: "25px",
+            border: "none",
+            backgroundColor: "#FFFFFF", // 検索バー自体の色は残す
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)", // 少し浮かせて見やすくする
+            outline: "none",
+            color: "#815D51"
           }}
-        >
-          <input
-            placeholder="検索"
-            style={{
-              width: "100%",
-              maxWidth: "500px",
-              padding: "12px",
-              borderRadius: "20px",
-              border: "none"
-            }}
-          />
-        </div>
+        />
+      </div>
 
-        {/* Event List (PeopleListのグリッドではなく、1列のリスト形式) */}
+      {/* 2. メインコンテンツの余白も少し調整 */}
+      <div style={{ 
+        paddingTop: "140px", // 検索バーが上に上がった分、ここも少し詰める
+        paddingBottom: "100px",
+        paddingLeft: "20px",
+        paddingRight: "20px"
+      }}>
         <div
           style={{
-            padding: "20px",
             display: "flex",
             flexDirection: "column",
             gap: "15px",
-            position: "relative",
-            zIndex: 10
           }}
         >
           {events.map((event) => {
@@ -83,9 +85,7 @@ export default function EventList() {
                   cursor: "pointer",
                   transition: "0.25s",
                 }}
-                // ホバーエフェクトをPeopleListに合わせる
                 onClick={() => navigate(`/events/${event.id}`)}
-
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)";
                   e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
@@ -130,7 +130,7 @@ export default function EventList() {
       </div>
 
       <Footer />
-      <FloatingButton onClick={() => navigate("/events/new")} />
-    </>
+      <FloatingButton onClick={() => navigate("/EventNew")} />
+    </div>
   );
 }
