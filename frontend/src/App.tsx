@@ -3,6 +3,7 @@ import EventList from "./screens/EventList";
 import PeopleList from "./screens/PeopleList";
 import PeopleDetail from "./screens/PeopleDetail";
 import EventNew from "./screens/EventNew";
+import EventEdit from "./screens/EventEdit";
 import Footer from "./components/Footer";
 import EventDetail from "./screens/EventDetail";
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/people/:id" element={<PeopleDetail />} />
         <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/EventNew" element={<EventNew />} />
+        <Route path="/events/:id/edit" element={<EventEdit />} />
       </Routes>
 
       <Footer />

@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { ChevronLeft } from "lucide-react";
 import FloatingButton from "../components/FloatingButton";
+import { useNavigate, useParams } from "react-router-dom";
 
 type Person = {
   id: number;
@@ -22,6 +23,9 @@ export default function EventDetail() {
   const { id } = useParams();
   const [event, setEvent] = useState<Event | null>(null);
 
+  const navigate = useNavigate();
+  
+
   useEffect(() => {
     fetch(`http://localhost:3000/events/${id}`)
       .then(res => res.json())
@@ -35,6 +39,17 @@ export default function EventDetail() {
 
   return (
     <>
+     <div style={{
+            position: "fixed",
+            top: "70px",
+            left: "20px",
+            zIndex: 1000,
+                cursor: "pointer"
+            }}
+            onClick={() => navigate(-1)}
+           >
+          <ChevronLeft size={28} color="#815D51" />
+         </div>
       <Header />
 
       <div
@@ -128,21 +143,20 @@ export default function EventDetail() {
         </div>
 
         {/* edit button */}
-        <div style={{ textAlign: "center" }}>
-          <button
-            style={{
-              background: "#88B49A",
-              border: "none",
-              padding: "12px 40px",
-              borderRadius: "10px",
-              color: "white",
-              fontSize: "16px",
-              cursor: "pointer"
+        <button
+          onClick={() => navigate(`/events/${id}/edit`)} // ここを追加！
+          style={{
+            background: "#88B49A",
+            border: "none",
+            padding: "12px 40px",
+            borderRadius: "10px",
+            color: "white",
+            fontSize: "16px",
+            cursor: "pointer",
             }}
-          >
+            >
             編集
-          </button>
-        </div>
+        </button>
       </div>
 
       <Footer />

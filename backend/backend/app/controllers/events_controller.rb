@@ -10,6 +10,29 @@ class EventsController < ApplicationController
     render json: event.to_json(include: :people)
   end
 
+  def update
+  event = Event.find(params[:id])
+
+  if event.update(event_params)
+
+    if params[:people_ids]
+      event.event_people.destroy_all
+
+      params[:people_ids].each do |person_id|
+        EventPerson.create(
+          event_id: event.id,
+          person_id: person_id
+        )
+      end
+    end
+
+    render json: event.to_json(include: :people)
+
+  else
+    render json: event.errors, status: 422
+  end
+end
+
   def create
 
     event = Event.new(event_params)
