@@ -16,6 +16,7 @@ export default function EventNew() {
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [people, setPeople] = useState<Person[]>([]);
+　const [memo, setMemo] = useState(""); 
   const [selectedPeople, setSelectedPeople] = useState<number[]>([]);
 
   // 人一覧取得
@@ -44,6 +45,7 @@ export default function EventNew() {
       body: JSON.stringify({
         title: title,
         place: place,
+        memo: memo,
         people_ids: selectedPeople
       })
     });
@@ -122,9 +124,16 @@ export default function EventNew() {
         </div>
 
         {/* memo */}
-        <div style={styles.cardRow}>
-          <span style={{ color: "#815D51" }}>memo</span>
-          <span style={{ color: "#815D51" }}>›</span>
+        <div style={styles.card}>
+            <div style={{ color: "#815D51", marginBottom: "8px" }}>
+            memo
+            </div>
+
+            <textarea
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            style={styles.textarea}
+             />
         </div>
 
         {/* picture */}
@@ -163,7 +172,7 @@ const styles: any = {
     right: 0,
     height: "170px",
     zIndex: 9999, // 最前面に持ってくる
-
+    
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -246,5 +255,17 @@ const styles: any = {
     marginTop: "20px",
     fontSize: "16px",
     fontWeight: "bold"
-  }
+  },
+
+  textarea: {
+  width: "100%",
+  minHeight: "80px",
+  border: "2px solid #7CAD8D",
+  borderRadius: "8px",
+  padding: "8px",
+  color: "#815D51",
+  outline: "none",
+  resize: "none",
+  boxSizing: "border-box" 
+},
 };

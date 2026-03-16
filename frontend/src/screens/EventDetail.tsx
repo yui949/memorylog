@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, Camera } from "lucide-react";
 import FloatingButton from "../components/FloatingButton";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -112,34 +112,40 @@ export default function EventDetail() {
 
         {/* memo */}
         <div
-          style={{
+        onClick={() => navigate(`/events/${id}/memo`)}
+         style={{
             background: "#EEF0E9",
             borderRadius: "20px",
             padding: "15px",
             marginBottom: "15px",
             color: "#815D51",
             display: "flex",
-            justifyContent: "space-between"
-          }}
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer"
+            }}
+            >
+            memo
+            <ChevronRight size={20} color="#815D51" />
+        </div>
+        {/* picture */}
+        <div style={{
+        background: "#EEF0E9",
+        borderRadius: "20px",
+        padding: "15px",
+        marginBottom: "40px",
+        color: "#815D51",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+        }}
         >
-          memo
-          <span>›</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <Camera size={20} color="#815D51" />
+        picture
         </div>
 
-        {/* picture */}
-        <div
-          style={{
-            background: "#EEF0E9",
-            borderRadius: "20px",
-            padding: "15px",
-            marginBottom: "40px",
-            color: "#815D51",
-            display: "flex",
-            justifyContent: "space-between"
-          }}
-        >
-          📷 picture
-          <span>›</span>
+        <ChevronRight size={20} color="#815D51" />
         </div>
 
         {/* edit button */}
