@@ -13,6 +13,7 @@ type Person = {
 export default function EventEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [memo, setMemo] = useState("");
 
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
@@ -37,6 +38,7 @@ export default function EventEdit() {
         .then((data) => {
           setTitle(data.title || "");
           setPlace(data.place || "");
+          setMemo(data.memo || "");
           if (data.people) {
             setSelectedPeople(data.people.map((p: any) => p.id));
           }
@@ -56,6 +58,7 @@ export default function EventEdit() {
        body: JSON.stringify({
         title: title,
         place: place,
+        memo: memo,
         people_ids: selectedPeople
         })
       });
@@ -135,6 +138,16 @@ export default function EventEdit() {
               <span style={{ color: "#815D51" }}>{person.name}</span>
             </div>
           ))}
+        </div>
+
+        <div style={styles.card}>
+            <div style={{ color: "#815D51", marginBottom: "8px" }}>memo </div>
+
+            <textarea
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            style={styles.textarea}
+             />
         </div>
 
         <div style={{ textAlign: "center", marginTop: "40px" }}>
@@ -247,5 +260,17 @@ const styles: any = {
     fontWeight: "bold",
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     pointerEvents: "auto"
-  }
+  },
+
+  textarea: {
+  width: "100%",
+  minHeight: "80px",
+  border: "2px solid #7CAD8D",
+  borderRadius: "8px",
+  padding: "8px",
+  color: "#815D51",
+  outline: "none",
+  resize: "none",
+  boxSizing: "border-box" 
+}
 };
