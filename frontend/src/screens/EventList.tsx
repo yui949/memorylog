@@ -14,6 +14,7 @@ type Event = {
 
 export default function EventList() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,8 @@ export default function EventList() {
       >
         <input
           placeholder="検索"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           style={{
             width: "100%",
             maxWidth: "500px",
@@ -69,7 +72,12 @@ export default function EventList() {
             gap: "15px",
           }}
         >
-          {events.map((event) => {
+          {events 
+          .filter((event) => 
+            event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            (event.place && event.place.toLowerCase().includes(searchQuery.toLowerCase()))
+            )
+          .map((event) => {
             const dateObj = new Date(event.date);
             const displayDate = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
 
