@@ -256,7 +256,7 @@ const styles: any = {
     top: 0,
     left: 0,
     right: 0,
-    height: "170px",
+    height: "160px",
     zIndex: 9999,
     display: "flex",
     justifyContent: "space-between",
