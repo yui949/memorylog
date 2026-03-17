@@ -19,6 +19,7 @@ export default function EventNew() {
   const [memo, setMemo] = useState("");
   const [selectedPeople, setSelectedPeople] = useState<number[]>([]);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:3000/people")
@@ -41,6 +42,7 @@ export default function EventNew() {
     formData.append("title", title);
     formData.append("place", place);
     formData.append("memo", memo);
+    formData.append("date", date);
 
     // 人も送る
     selectedPeople.forEach((id) => {
@@ -94,6 +96,20 @@ export default function EventNew() {
               onChange={(e) => setPlace(e.target.value)}
             />
           </div>
+        </div>
+
+　　　　{/* カレンダー */}
+        <div style={styles.card}>
+            <div style={styles.row}>
+                <CalendarSearch size={22} color="#815D51" />
+                <span style={{ ...styles.label, marginLeft: 10 }}>date:</span>
+                <input
+                type="date"
+                style={styles.input}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                />
+            </div>
         </div>
 
         {/* people */}
@@ -188,7 +204,7 @@ const styles: any = {
     top: 0,
     left: 0,
     right: 0,
-    height: "170px",
+    height: "160px",
     zIndex: 9999,
     display: "flex",
     justifyContent: "space-between",

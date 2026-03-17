@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { X, Check, Camera } from "lucide-react";
+import { X, Check, Camera, CalendarSearch } from "lucide-react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -25,6 +25,8 @@ export default function EventEdit() {
   const [existingPhotos, setExistingPhotos] = useState<any[]>([]);
   const [removePhotoIds, setRemovePhotoIds] = useState<number[]>([]);
 
+  const [date, setDate] = useState("");
+
    const togglePerson = (personId: number) => {
   if (selectedPeople.includes(personId)) {
     setSelectedPeople(selectedPeople.filter((p) => p !== personId));
@@ -46,6 +48,7 @@ export default function EventEdit() {
           setTitle(data.title || "");
           setPlace(data.place || "");
           setMemo(data.memo || "");
+          setDate(data.date || "");
 
           if (data.people) {
             setSelectedPeople(data.people.map((p: any) => p.id));
@@ -64,6 +67,7 @@ export default function EventEdit() {
     formData.append("title", title);
     formData.append("place", place);
     formData.append("memo", memo);
+    formData.append("date", date);
 
     // 人
     selectedPeople.forEach((id) => {
@@ -125,6 +129,20 @@ export default function EventEdit() {
               onChange={(e) => setPlace(e.target.value)}
             />
           </div>
+        </div>
+
+        {/* カレンダー */}
+        <div style={styles.card}>
+            <div style={styles.row}>
+                <CalendarSearch size={22} color="#815D51" />
+                <span style={{ ...styles.label, marginLeft: 10 }}>date:</span>
+                <input
+                type="date"
+                style={styles.input}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                />
+            </div>
         </div>
 
         {/* ⭐ people UI完全修正 */}
