@@ -105,9 +105,9 @@ export default function EventDetail() {
           }}
         >
           people:
-          {event.people.map((p) => (
+         {event.people?.map((p) => (
             <div key={p.id}>{p.name}</div>
-          ))}
+        ))}
         </div>
 
         {/* memo */}
@@ -129,7 +129,9 @@ export default function EventDetail() {
             <ChevronRight size={20} color="#815D51" />
         </div>
         {/* picture */}
-        <div style={{
+        <div 
+         onClick={() => navigate(`/events/${id}/photos`)}
+         style={{
         background: "#EEF0E9",
         borderRadius: "20px",
         padding: "15px",

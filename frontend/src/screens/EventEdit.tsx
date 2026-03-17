@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { X, CalendarSearch, Check } from "lucide-react";
+import { X, Check, Camera } from "lucide-react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -13,91 +13,100 @@ type Person = {
 export default function EventEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [memo, setMemo] = useState("");
 
+  const [memo, setMemo] = useState("");
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
+
   const [people, setPeople] = useState<Person[]>([]);
   const [selectedPeople, setSelectedPeople] = useState<number[]>([]);
 
-  // 1. データの読み込み
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [existingPhotos, setExistingPhotos] = useState<any[]>([]);
+  const [removePhotoIds, setRemovePhotoIds] = useState<number[]>([]);
+
+   const togglePerson = (personId: number) => {
+  if (selectedPeople.includes(personId)) {
+    setSelectedPeople(selectedPeople.filter((p) => p !== personId));
+  } else {
+    setSelectedPeople([...selectedPeople, personId]);
+  }
+};
+
+
   useEffect(() => {
-    // 全ユーザーの取得
     fetch("http://localhost:3000/people")
       .then((res) => res.json())
-      .then((data) => setPeople(data))
-      .catch((err) => console.error("People取得失敗:", err));
+      .then((data) => setPeople(data));
 
-    // 編集対象イベントの取得
     if (id) {
       fetch(`http://localhost:3000/events/${id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("イベントが見つかりません");
-          return res.json();
-        })
+        .then((res) => res.json())
         .then((data) => {
           setTitle(data.title || "");
           setPlace(data.place || "");
           setMemo(data.memo || "");
+
           if (data.people) {
             setSelectedPeople(data.people.map((p: any) => p.id));
           }
-        })
-        .catch((err) => console.error("Event取得失敗 (404等):", err));
+
+          setExistingPhotos(data.photos || []);
+        });
     }
   }, [id]);
 
-  // 2. 更新処理
   const updateEvent = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/events/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json"
-        },
-       body: JSON.stringify({
-        title: title,
-        place: place,
-        memo: memo,
-        people_ids: selectedPeople
-        })
-      });
+  try {
+    const formData = new FormData();
+   
+    // 基本データ
+    formData.append("title", title);
+    formData.append("place", place);
+    formData.append("memo", memo);
 
-      if (response.ok) {
-        navigate("/events"); 
-      } else {
-        alert("更新に失敗しました。Rails側のログを確認してください。");
-      }
-    } catch (error) {
-      alert("通信に失敗しました。");
-    }
-  };
+    // 人
+    selectedPeople.forEach((id) => {
+      formData.append("people_ids[]", String(id));
+    });
 
-  const togglePerson = (personId: number) => {
-    if (selectedPeople.includes(personId)) {
-      setSelectedPeople(selectedPeople.filter((p) => p !== personId));
+    // 🔥 新しく追加した画像
+    photos.forEach((file :File) => {
+      formData.append("photos[]", file);
+    });
+
+    // 🔥 削除する画像
+    removePhotoIds.forEach((id) => {
+      formData.append("remove_photo_ids[]", String(id));
+    });
+
+    const response = await fetch(`http://localhost:3000/events/${id}`, {
+      method: "PATCH",
+      body: formData // ←これが重要
+    });
+
+    if (response.ok) {
+      navigate(`/events/${id}`);
     } else {
-      setSelectedPeople([...selectedPeople, personId]);
+      alert("更新失敗（Railsログ見て）");
     }
-  };
+  } catch (error) {
+    alert("通信失敗");
+  }
+};
 
   return (
     <div style={styles.container}>
-      {/* 共通ヘッダーを表示 */}
-      <Header />
-
-      {/* ヘッダーの上にタイトルとXボタンを重ねる */}
-      <div style={styles.headerOverlay}>
+      {/* ⭐上部バーをNewと統一 */}
+      <div style={styles.topBar}>
         <h2 style={styles.title}>イベントを編集</h2>
-        <X
-          size={28}
-          color="#FFFFFF"
-          style={styles.closeIcon}
-          onClick={() => navigate(`/events/${id}`)}
-        />
+        <X size={28} color="#815D51" onClick={() => navigate(`/events/${id}`)} /> {/* ⭐変更 */}
       </div>
 
+      <Header />
+
       <div style={styles.content}>
+        {/* title & place */}
         <div style={styles.card}>
           <div style={styles.row}>
             <span style={styles.label}>title:</span>
@@ -107,6 +116,7 @@ export default function EventEdit() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
+
           <div style={styles.row}>
             <span style={styles.label}>place:</span>
             <input
@@ -117,44 +127,95 @@ export default function EventEdit() {
           </div>
         </div>
 
-        <div style={styles.cardRow}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <CalendarSearch size={22} color="#815D51" />
-            <span style={{ marginLeft: 10, color: "#815D51" }}>日付の編集（未実装）</span>
-          </div>
-        </div>
-
+        {/* ⭐ people UI完全修正 */}
         <div style={styles.card}>
           <div style={{ color: "#815D51", marginBottom: "8px" }}>people:</div>
-          {people.map((person) => (
-            <div
-              key={person.id}
-              style={styles.personRow}
-              onClick={() => togglePerson(person.id)}
-            >
-              <div style={styles.checkbox}>
-                {selectedPeople.includes(person.id) && <Check size={16} color="#7CAD8D" />}
+
+          {people.map((person) => {
+            const selected = selectedPeople.includes(person.id);
+
+            return (
+              <div
+                key={person.id}
+                style={styles.personRow}
+                onClick={() => togglePerson(person.id)}
+              >
+                <div style={styles.checkbox}>
+                  {selected && <Check size={16} color="#7CAD8D" />}
+                </div>
+
+                <span style={{ color: "#815D51" }}>{person.name}</span>
               </div>
-              <span style={{ color: "#815D51" }}>{person.name}</span>
+            );
+          })}
+        </div>
+
+        {/* memo */}
+        <div style={styles.card}>
+          <div style={{ color: "#815D51", marginBottom: "8px" }}>memo</div>
+
+          <textarea
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+            style={styles.textarea}
+          />
+        </div>
+
+        {/* ⭐ picture */}
+        <div style={styles.card}>
+          <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
+            <Camera size={22} color="#815D51" /> {/* ⭐変更 */}
+            <span style={{ marginLeft: 10, color: "#815D51" }}>picture</span>
+          </div>
+
+          {/* ⭐既存画像 */}
+          {existingPhotos.map((photo, index) => (
+            <div key={photo.id}>
+            <img src={photo.url} style={{ width: "100px" }} />
+
+            <button onClick={() => {
+        // UIから消す
+        setExistingPhotos(existingPhotos.filter(p => p.id !== photo.id));
+
+        // 🔥 Railsに送る削除ID
+        setRemovePhotoIds([...removePhotoIds, photo.id]);
+        }}
+        >
+        削除
+        </button>
+    </div>
+    ))}
+
+          {/* ⭐新規追加 */}
+          <input
+            type="file"
+            multiple
+            onChange={(e) => {
+              if (!e.target.files) return;
+              setPhotos(Array.from(e.target.files));
+            }}
+          />
+
+          {/* ⭐新規プレビュー */}
+          {photos.map((photo, index) => (
+            <div key={index} style={{ marginTop: "8px" }}>
+              {photo.name}
+              <button
+                onClick={() => {
+                  const newPhotos = photos.filter((_, i) => i !== index);
+                  setPhotos(newPhotos);
+                }}
+              >
+                削除
+              </button>
             </div>
           ))}
         </div>
 
-        <div style={styles.card}>
-            <div style={{ color: "#815D51", marginBottom: "8px" }}>memo </div>
-
-            <textarea
-            value={memo}
-            onChange={(e) => setMemo(e.target.value)}
-            style={styles.textarea}
-             />
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: "40px" }}>
-          <button style={styles.doneButton} onClick={updateEvent}>
-            変更を保存
-          </button>
-        </div>
+        {/* ⭐ボタンも統一 */}
+        <button style={styles.doneButton} onClick={updateEvent}>
+          保存
+        </button>
       </div>
 
       <Footer />
@@ -168,60 +229,58 @@ const styles: any = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    paddingTop: "100px" 
+    paddingTop: "100px"
   },
-  headerOverlay: {
+
+  // ⭐Newと揃えた
+  topBar: {
     position: "fixed",
-    top: 35,
+    top: 0,
     left: 0,
     right: 0,
-    height: "100px",
+    height: "170px",
+    zIndex: 9999,
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    zIndex: 10001,
-    pointerEvents: "none", // 背後の要素を邪魔しない
+    padding: "0 20px",
+    borderBottomLeftRadius: "30px",
+    borderBottomRightRadius: "30px",
   },
+
   title: {
     color: "#FFFFFF",
     fontSize: "24px",
     fontWeight: "bold",
     margin: 0,
+    flex: 1,
+    textAlign: "center",
+    marginLeft: "30px"
   },
-  closeIcon: {
-    cursor: "pointer",
-    position: "absolute",
-    right: "20px",
-    pointerEvents: "auto", // これでクリックが効くようになります
-  },
+
   content: {
     padding: "20px",
     flex: 1
   },
+
   card: {
     background: "#EEF0E9",
     padding: "16px",
     borderRadius: "10px",
     marginBottom: "16px"
   },
-  cardRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    background: "#EEF0E9",
-    padding: "16px",
-    borderRadius: "10px",
-    marginBottom: "16px"
-  },
+
   row: {
     display: "flex",
     alignItems: "center",
     marginBottom: "10px"
   },
+
   label: {
     width: "60px",
     color: "#815D51"
   },
+
   input: {
     border: "2px solid #7CAD8D",
     borderRadius: "6px",
@@ -232,6 +291,7 @@ const styles: any = {
     outline: "none",
     backgroundColor: "white"
   },
+
   personRow: {
     display: "flex",
     alignItems: "center",
@@ -239,6 +299,7 @@ const styles: any = {
     marginTop: "8px",
     cursor: "pointer"
   },
+
   checkbox: {
     width: "22px",
     height: "22px",
@@ -249,28 +310,29 @@ const styles: any = {
     justifyContent: "center",
     backgroundColor: "white"
   },
+
   doneButton: {
     background: "#7CAD8D",
     border: "none",
     color: "white",
-    padding: "12px 60px", 
-    borderRadius: "10px",
+    padding: "12px",
+    borderRadius: "6px",
+    width: "100%",
     cursor: "pointer",
+    marginTop: "20px",
     fontSize: "16px",
-    fontWeight: "bold",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    pointerEvents: "auto"
+    fontWeight: "bold"
   },
 
   textarea: {
-  width: "100%",
-  minHeight: "80px",
-  border: "2px solid #7CAD8D",
-  borderRadius: "8px",
-  padding: "8px",
-  color: "#815D51",
-  outline: "none",
-  resize: "none",
-  boxSizing: "border-box" 
-}
+    width: "100%",
+    minHeight: "80px",
+    border: "2px solid #7CAD8D",
+    borderRadius: "8px",
+    padding: "8px",
+    color: "#815D51",
+    outline: "none",
+    resize: "none",
+    boxSizing: "border-box"
+  }
 };
