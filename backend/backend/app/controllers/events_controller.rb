@@ -25,22 +25,19 @@ class EventsController < ApplicationController
   end
 
   def update
-    event = Event.find(params[:id])
-
-    # 🔥 画像削除
-    if params[:remove_photo_ids]
-      params[:remove_photo_ids].each do |photo_id|
-        photo = event.photos.find(photo_id)
-        photo.purge
-      end
+  @event = Event.find(params[:id])
+  
+  # 写真以外の項目を先に更新
+  if @event.update(event_params.except(:photos))
+    # 写真がある場合だけ、今の写真リストに「追加（attach）」する
+    if params[:photos].present?
+      @event.photos.attach(params[:photos])
     end
-
-    if event.update(event_params)
-      render json: event
-    else
-      render json: event.errors, status: 422
-    end
+    render json: @event, status: :ok
+  else
+    render json: @event.errors, status: :unprocessable_entity
   end
+end
 
   def create
     event = Event.new(event_params)
@@ -64,6 +61,6 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.permit(:title, :place, :memo, photos: [], people_ids: [])
+    params.permit(:title, :place, :memo, :id, photos: [], person_ids: [])
   end
 end
