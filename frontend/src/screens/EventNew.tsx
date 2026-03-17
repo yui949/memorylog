@@ -16,17 +16,16 @@ export default function EventNew() {
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [people, setPeople] = useState<Person[]>([]);
-　const [memo, setMemo] = useState(""); 
+  const [memo, setMemo] = useState("");
   const [selectedPeople, setSelectedPeople] = useState<number[]>([]);
+  const [photos, setPhotos] = useState<File[]>([]);
 
-  // 人一覧取得
   useEffect(() => {
     fetch("http://localhost:3000/people")
       .then((res) => res.json())
       .then((data) => setPeople(data));
   }, []);
 
-  // チェック切り替え
   const togglePerson = (id: number) => {
     if (selectedPeople.includes(id)) {
       setSelectedPeople(selectedPeople.filter((p) => p !== id));
@@ -35,22 +34,30 @@ export default function EventNew() {
     }
   };
 
-  // イベント保存
-  const createEvent = async () => {
-    const response = await fetch("http://localhost:3000/events", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        title: title,
-        place: place,
-        memo: memo,
-        people_ids: selectedPeople
-      })
+  // ⭐ これに統一（JSONのcreateEventは使わない）
+  const handleSubmit = async () => {
+    const formData = new FormData();
+
+    formData.append("title", title);
+    formData.append("place", place);
+    formData.append("memo", memo);
+
+    // 人も送る
+    selectedPeople.forEach((id) => {
+      formData.append("people_ids[]", String(id));
     });
 
-    if (response.ok) {
+    // 写真
+    photos.forEach((photo) => {
+      formData.append("photos[]", photo);
+    });
+
+    const res = await fetch("http://localhost:3000/events", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
       navigate("/events");
     } else {
       alert("保存失敗");
@@ -59,18 +66,12 @@ export default function EventNew() {
 
   return (
     <div style={styles.container}>
-      {/* 1. 一番上にタイトルバーを配置 */}
+      {/* top */}
       <div style={styles.topBar}>
         <h2 style={styles.title}>イベントを追加</h2>
-        <X
-          size={28}
-          color="#FFFFFF"
-          style={{ cursor: "pointer" }}
-          onClick={() => navigate("/events")}
-        />
+        <X size={28} color="#FFFFFF" onClick={() => navigate("/events")} />
       </div>
 
-      {/* 2. その下に共通ヘッダー */}
       <Header />
 
       <div style={styles.content}>
@@ -92,14 +93,6 @@ export default function EventNew() {
               value={place}
               onChange={(e) => setPlace(e.target.value)}
             />
-          </div>
-        </div>
-
-        {/* date */}
-        <div style={styles.cardRow}>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <CalendarSearch size={22} color="#815D51" />
-            <span style={{ marginLeft: 10, color: "#815D51" }}> : 3/X</span>
           </div>
         </div>
 
@@ -125,28 +118,54 @@ export default function EventNew() {
 
         {/* memo */}
         <div style={styles.card}>
-            <div style={{ color: "#815D51", marginBottom: "8px" }}>
+          <div style={{ color: "#815D51", marginBottom: "8px" }}>
             memo
-            </div>
+          </div>
 
-            <textarea
+          <textarea
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
             style={styles.textarea}
-             />
+          />
         </div>
 
-        {/* picture */}
-        <div style={styles.cardRow}>
-          <div style={{ display: "flex", alignItems: "center" }}>
+        {/* ⭐ picture（ここが今回の本体） */}
+        <div style={styles.card}>
+          <div style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}>
             <Camera size={22} color="#815D51" />
             <span style={{ marginLeft: 10, color: "#815D51" }}>picture</span>
           </div>
-          <span style={{ color: "#815D51" }}>›</span>
+
+          <input type="file"
+            multiple
+            onChange={(e) => {
+            if (e.target.files) {
+            setPhotos(Array.from(e.target.files));
+            }
+             }}
+        />
+
+        {/* ← inputタグの外に出す！！ */}
+        {photos.map((photo, index) => (
+        <div key={index} style={{ marginTop: "8px" }}>
+        {photo.name}
+         </div>
+        ))}
+          /
+
+          
+
+          {/* 選択中の枚数表示 */}
+          {photos.length > 0 && (
+            <div style={{ marginTop: "8px", color: "#815D51" }}>
+              {photos.length}枚選択中
+            </div>
+          )}
         </div>
 
+
         {/* 完了ボタン */}
-        <button style={styles.doneButton} onClick={createEvent}>
+        <button style={styles.doneButton} onClick={handleSubmit}>
           完了
         </button>
       </div>
@@ -162,8 +181,7 @@ const styles: any = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    // コンテンツがヘッダーに隠れないよう調整
-    paddingTop: "100px" 
+    paddingTop: "100px"
   },
   topBar: {
     position: "fixed",
@@ -171,8 +189,7 @@ const styles: any = {
     left: 0,
     right: 0,
     height: "170px",
-    zIndex: 9999, // 最前面に持ってくる
-    
+    zIndex: 9999,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -218,15 +235,6 @@ const styles: any = {
     outline: "none",
     backgroundColor: "white"
   },
-  cardRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    background: "#EEF0E9",
-    padding: "16px",
-    borderRadius: "10px",
-    marginBottom: "16px"
-  },
   personRow: {
     display: "flex",
     alignItems: "center",
@@ -245,7 +253,7 @@ const styles: any = {
     backgroundColor: "white"
   },
   doneButton: {
-    background: "#7CAD8D", // 元のボタンの色をキープ
+    background: "#7CAD8D",
     border: "none",
     color: "white",
     padding: "12px",
@@ -256,16 +264,15 @@ const styles: any = {
     fontSize: "16px",
     fontWeight: "bold"
   },
-
   textarea: {
-  width: "100%",
-  minHeight: "80px",
-  border: "2px solid #7CAD8D",
-  borderRadius: "8px",
-  padding: "8px",
-  color: "#815D51",
-  outline: "none",
-  resize: "none",
-  boxSizing: "border-box" 
-},
+    width: "100%",
+    minHeight: "80px",
+    border: "2px solid #7CAD8D",
+    borderRadius: "8px",
+    padding: "8px",
+    color: "#815D51",
+    outline: "none",
+    resize: "none",
+    boxSizing: "border-box"
+  },
 };
