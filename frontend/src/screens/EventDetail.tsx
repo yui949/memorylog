@@ -203,8 +203,8 @@ export default function EventDetail() {
             color: "white",
             fontSize: "16px",
             cursor: "pointer",
-            flex: 1 // 編集ボタンを少し長めに
-            }}
+            flex: 1
+            }} 
             >
             編集
             </button>
