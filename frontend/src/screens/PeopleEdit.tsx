@@ -64,7 +64,14 @@ export default function PeopleEdit() {
 
   return (
     <div style={styles.container}>
+      {/* --- ここを追加：トップバー --- */}
+      <div style={styles.topBar}>
+        <h2 style={styles.title}>人を編集</h2>
+        <X size={28} color="#FFFFFF" onClick={() => navigate("/people")} style={{ cursor: "pointer" }} />
+      </div>
+
       <Header />
+      
       <div style={styles.content}>
         <div style={styles.card}>
           <div style={styles.row}>

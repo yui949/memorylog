@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -40,7 +41,14 @@ export default function PeopleNew() {
 
   return (
     <div style={styles.container}>
+      {/* --- ここを追加：トップバー --- */}
+      <div style={styles.topBar}>
+        <h2 style={styles.title}>人を追加</h2>
+        <X size={28} color="#FFFFFF" onClick={() => navigate("/people")} style={{ cursor: "pointer" }} />
+      </div>
+
       <Header />
+
       <div style={styles.content}>
         <div style={styles.card}>
           <div style={styles.row}>
@@ -60,7 +68,7 @@ export default function PeopleNew() {
           <div style={styles.row}><span style={styles.label}>信頼度:</span><input style={styles.input} value={reliability} onChange={(e) => setReliability(e.target.value)} /></div>
           <div style={styles.row}><span style={styles.label}>メモ:</span><textarea style={styles.textarea} value={other} onChange={(e) => setOther(e.target.value)} /></div>
           <div style={styles.row}>
-            <span style={styles.label}>次はなす:</span>
+            <span style={styles.label}>次話す:</span>
             <textarea style={styles.textarea} value={nextTopic} onChange={(e) => setNextTopic(e.target.value)} />
           </div>
         </div>
