@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_16_133338) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_18_020817) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -66,6 +66,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_16_133338) do
     t.string "mbti"
     t.string "blood_type"
     t.text "next_topic"
+    t.string "reliability"
+    t.text "other"
   end
 
   create_table "person_events", force: :cascade do |t|

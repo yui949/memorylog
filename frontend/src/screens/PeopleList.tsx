@@ -14,10 +14,10 @@ export default function PeopleList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3000/people")
-      .then(res => res.json())
-      .then(data => setPeople(data));
-  }, []);
+  fetch("http://localhost:3000/people")
+    .then(res => res.json())
+    .then(data => setPeople(data));
+}, []);
 
   return (
     <>

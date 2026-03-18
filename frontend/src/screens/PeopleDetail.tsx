@@ -21,6 +21,26 @@ export default function PeopleDetail() {
   const [person, setPerson] = useState<Person | null>(null);
   const navigate = useNavigate();
 
+  const handleDelete = async () => {
+  if (!window.confirm("この人を削除しますか？")) return;
+
+  try {
+    const res = await fetch(`http://localhost:3000/people/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      throw new Error("削除失敗");
+    }
+
+    alert("削除しました");
+    navigate("/people");
+  } catch (error) {
+    console.error(error);
+    alert("削除に失敗しました");
+  }
+};
+
   useEffect(() => {
     fetch(`http://localhost:3000/people/${id}`)
       .then(res => res.json())
@@ -103,7 +123,39 @@ export default function PeopleDetail() {
           </div>
 
         </div>
+<div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+  <button
+    onClick={handleDelete}
+    style={{
+      background: "#FFB3C1",
+      border: "none",
+      padding: "12px 0",
+      borderRadius: "10px",
+      color: "white",
+      fontSize: "16px",
+      cursor: "pointer",
+      flex: 1
+    }}
+  >
+    削除
+  </button>
 
+  <button
+    onClick={() => navigate(`/people/${id}/edit`)}
+    style={{
+      background: "#88B49A",
+      border: "none",
+      padding: "12px 0",
+      borderRadius: "10px",
+      color: "white",
+      fontSize: "16px",
+      cursor: "pointer",
+      flex: 1
+    }}
+  >
+    編集
+  </button>
+</div>
       </div>
       
     </>
