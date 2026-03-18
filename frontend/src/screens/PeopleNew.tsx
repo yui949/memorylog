@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { X } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -13,23 +12,21 @@ export default function PeopleNew() {
   const [bloodType, setBloodType] = useState("");
   const [reliability, setReliability] = useState("");
   const [other, setOther] = useState("");
- 
-
+  const [nextTopic, setNextTopic] = useState(""); // ステート追加
 
   const handleSubmit = async () => {
     const res = await fetch("http://localhost:3000/people", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         person: {
           name,
           group,
           mbti,
           blood_type: bloodType,
-          reliability: reliability,
-          other: other,
+          reliability,
+          other,
+          next_topic: nextTopic, // Railsに送るデータ
         },
       }),
     });
@@ -37,97 +34,38 @@ export default function PeopleNew() {
     if (res.ok) {
       navigate("/people");
     } else {
-      alert("保存失敗");
+      alert("保存に失敗しました");
     }
   };
 
-  
-
   return (
     <div style={styles.container}>
-      {/* top */}
-      <div style={styles.topBar}>
-        <h2 style={styles.title}>人を追加</h2>
-        <X size={28} color="#FFFFFF" onClick={() => navigate("/people")} />
-      </div>
-
       <Header />
-
       <div style={styles.content}>
-        {/* name group */}
         <div style={styles.card}>
           <div style={styles.row}>
             <span style={styles.label}>name:</span>
-            <input
-              style={styles.input}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <input style={styles.input} value={name} onChange={(e) => setName(e.target.value)} />
           </div>
-
           <div style={styles.row}>
             <span style={styles.label}>group:</span>
-            <input
-              style={styles.input}
-              value={group}
-              onChange={(e) => setGroup(e.target.value)}
-            />
+            <input style={styles.input} value={group} onChange={(e) => setGroup(e.target.value)} />
           </div>
         </div>
 
-        {/* memo */}
         <div style={styles.card}>
-          <div style={{ color: "#815D51", marginBottom: "8px" }}>
-            memo
-          </div>
-
+          <div style={{ color: "#815D51", marginBottom: "8px" }}>memo</div>
+          <div style={styles.row}><span style={styles.label}>MBTI:</span><input style={styles.input} value={mbti} onChange={(e) => setMbti(e.target.value)} /></div>
+          <div style={styles.row}><span style={styles.label}>血液型:</span><input style={styles.input} value={bloodType} onChange={(e) => setBloodType(e.target.value)} /></div>
+          <div style={styles.row}><span style={styles.label}>信頼度:</span><input style={styles.input} value={reliability} onChange={(e) => setReliability(e.target.value)} /></div>
+          <div style={styles.row}><span style={styles.label}>メモ:</span><textarea style={styles.textarea} value={other} onChange={(e) => setOther(e.target.value)} /></div>
           <div style={styles.row}>
-            <span style={styles.label}>MBTI:</span>
-            <input
-              style={styles.input}
-              value={mbti}
-              onChange={(e) => setMbti(e.target.value)}
-            />
+            <span style={styles.label}>次はなす:</span>
+            <textarea style={styles.textarea} value={nextTopic} onChange={(e) => setNextTopic(e.target.value)} />
           </div>
-
-          <div style={styles.row}>
-            <span style={styles.label}>血液型:</span>
-            <input
-              style={styles.input}
-              value={bloodType}
-              onChange={(e) => setBloodType(e.target.value)}
-            />
-          </div>
-
-          <div style={styles.row}>
-            <span style={styles.label}>信頼度:</span>
-            <input
-              style={styles.input}
-              value={reliability}
-              onChange={(e) => setReliability(e.target.value)}
-            />
-          </div>
-
-          <div style={styles.row}>
-            <span style={styles.label}>メモ:</span>
-            <textarea
-            style={styles.textarea}
-            value={other}
-            onChange={(e) => setOther(e.target.value)}
-             />
-        　　</div>
-
-
-
-          
         </div>
-
-        {/* 完了 */}
-        <button style={styles.doneButton} onClick={handleSubmit}>
-          完了
-        </button>
+        <button style={styles.doneButton} onClick={handleSubmit}>完了</button>
       </div>
-
       <Footer />
     </div>
   );

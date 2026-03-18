@@ -1,47 +1,39 @@
 class PeopleController < ApplicationController
   def index
-    people = Person.all
-    render json: people
+    render json: Person.all
   end
 
   def show
-  person = Person.find(params[:id])
-
-  render json: person.as_json(include: {
-    events: {
-      only: [:id, :title, :date, :place]
-    }
-  })
+    person = Person.find(params[:id])
+    render json: person.as_json(include: { events: { only: [:id, :title, :date, :place] } })
   end
 
   def create
     person = Person.new(person_params)
-
     if person.save
-  render json: person
-else
-  render json: { errors: person.errors.full_messages }, status: :unprocessable_entity
-end
+      render json: person
+    else
+      render json: { errors: person.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @person = Person.find(params[:id])
+    if @person.update(person_params)
+      render json: @person
+    else
+      render json: { errors: @person.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def destroy
-  person = Person.find(params[:id])
-  person.destroy
-  head :no_content
-end
+    Person.find(params[:id]).destroy
+    head :no_content
+  end
 
   private
 
   def person_params
-  params.require(:person).permit(
-    :name,
-    :group,
-    :mbti,
-    :blood_type,
-    :reliability,
-    :other
-  )
+    params.require(:person).permit(:name, :group, :mbti, :blood_type, :reliability, :other, :next_topic)
   end
-
-  
 end
