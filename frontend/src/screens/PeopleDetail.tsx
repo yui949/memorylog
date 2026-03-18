@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // まとめてインポート
 import Header from "../components/Header";
-import { ChevronLeft } from "lucide-react";
+import { X, ChevronLeft } from "lucide-react";
+
 
 // 型定義をRailsのカラム名に合わせる
 type Person = {
@@ -53,6 +54,7 @@ export default function PeopleDetail() {
 
   return (
     <>
+    
       {/* 戻るボタン */}
       <div
         style={{
