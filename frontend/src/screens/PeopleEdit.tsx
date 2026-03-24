@@ -20,7 +20,7 @@ export default function PeopleEdit() {
     if (!id) return;
     const fetchPerson = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/people/${id}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/people/${id}`);
         if (res.ok) {
           const data = await res.json();
           setName(data.name || "");
@@ -39,7 +39,7 @@ export default function PeopleEdit() {
   }, [id]);
 
   const handleSubmit = async () => {
-    const res = await fetch(`http://localhost:3000/people/${id}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/people/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

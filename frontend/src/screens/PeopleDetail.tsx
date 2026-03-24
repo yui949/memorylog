@@ -32,7 +32,7 @@ export default function PeopleDetail() {
     if (!window.confirm("この人を削除しますか？")) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/people/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/people/${id}`, {
         method: "DELETE",
       });
 
@@ -48,7 +48,7 @@ export default function PeopleDetail() {
 
   // データ取得
   useEffect(() => {
-  fetch(`http://localhost:3000/people/${id}`)
+  fetch(`${process.env.REACT_APP_API_URL}/people/${id}`)
     .then((res) => res.json())
     .then((data) => {
       setPerson(data.person);
