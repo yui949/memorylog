@@ -28,6 +28,7 @@ MemoryLog(めもろぐ)
 - バックエンド：自分
 - デザイン：自分
 
+- デプロイ:new-mainブランチで行う。https://memorylog-backend-xrio.onrender.com
 ---
 
 ## **1. 目的・ゴール定義**
