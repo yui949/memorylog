@@ -280,6 +280,8 @@ const styles: any = {
 
   content: {
     padding: "20px",
+    paddingTop: "90px", 
+    paddingBottom: "200px",
     flex: 1
   },
 

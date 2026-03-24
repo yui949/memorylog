@@ -16,10 +16,16 @@ type Person = {
   next_topic?: string;
 };
 
+type EventType = {
+  id: number;
+  title: string;
+};
+
 export default function PeopleDetail() {
   const { id } = useParams<{ id: string }>(); 
   const [person, setPerson] = useState<Person | null>(null);
   const navigate = useNavigate();
+  const [events, setEvents] = useState<EventType[]>([]);
 
   // 削除処理
   const handleDelete = async () => {
@@ -42,11 +48,14 @@ export default function PeopleDetail() {
 
   // データ取得
   useEffect(() => {
-    fetch(`http://localhost:3000/people/${id}`)
-      .then((res) => res.json())
-      .then((data) => setPerson(data))
-      .catch((err) => console.error("取得エラー:", err));
-  }, [id]);
+  fetch(`http://localhost:3000/people/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      setPerson(data.person);
+      setEvents(data.events);
+    })
+    .catch((err) => console.error("取得エラー:", err));
+}, [id]);
 
   if (!person) {
     return <div style={{ textAlign: "center", marginTop: "100px" }}>Loading...</div>;
@@ -126,7 +135,50 @@ export default function PeopleDetail() {
             <strong>次話したいこと :</strong>
             <div style={{ marginTop: "5px" }}>{person.next_topic || "なし"}</div>
           </div>
+
+          <div
+          style={{
+          ...styles.infoRow,
+          marginTop: "15px",
+          borderTop: "1px solid #D1D3CC",
+          paddingTop: "15px",
+        }}
+      >
+      <strong>共通イベント :</strong>
+
+      <div
+  style={{
+    marginTop: "10px",
+    maxHeight: "120px", // ←ここがミソ（3件分くらい）
+    overflowY: "auto",
+  }}
+>
+        {events.length === 0 ? (
+          <div>なし</div>
+        ) : (
+          events.map((event) => (
+            <div
+              key={event.id}
+              style={{
+                padding: "8px",
+                borderRadius: "8px",
+                background: "#FFFFFF",
+                minHeight: "20px",
+                marginBottom: "8px",
+                cursor: "pointer",
+              }}
+              onClick={() => navigate(`/events/${event.id}`)}
+            >
+              {event.title}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+
         </div>
+
+        
 
         {/* ボタンエリア */}
         <div style={{ display: "flex", gap: "10px", marginTop: "30px" }}>
