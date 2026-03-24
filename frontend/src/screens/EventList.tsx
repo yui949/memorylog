@@ -138,7 +138,7 @@ export default function EventList() {
       </div>
 
       <Footer />
-      <FloatingButton onClick={() => navigate("/EventNew")} />
+      <FloatingButton onClick={() => navigate("/events/new")} />
     </div>
   );
 }

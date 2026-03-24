@@ -224,6 +224,7 @@ const styles: any = {
   },
   content: {
     padding: "20px",
+    paddingBottom: "120px",
     flex: 1
   },
   card: {
