@@ -247,7 +247,9 @@ const styles: any = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    paddingTop: "100px"
+    paddingTop: "100px",
+    padding: "20px",
+    flex: 1
   },
 
   // ⭐Newと揃えた
