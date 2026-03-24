@@ -15,7 +15,7 @@ export default function EventPhoto() {
   const [photos, setPhotos] = useState<PhotoType[]>([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/events/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then(res => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
@@ -80,7 +80,7 @@ export default function EventPhoto() {
             return (
               <img
                 key={index}
-                src={photoUrl.startsWith("http") ? photoUrl : `http://localhost:3000${photoUrl}`}
+                src={photoUrl.startsWith("http") ? photoUrl : `${process.env.REACT_APP_API_URL}${photoUrl}`}
                 alt="event"
                 style={{
                   width: "100%",

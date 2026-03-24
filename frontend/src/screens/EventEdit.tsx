@@ -37,12 +37,12 @@ export default function EventEdit() {
 
 
   useEffect(() => {
-    fetch("http://localhost:3000/people")
+    fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then((res) => res.json())
       .then((data) => setPeople(data));
 
     if (id) {
-      fetch(`http://localhost:3000/events/${id}`)
+      fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
         .then((res) => res.json())
         .then((data) => {
           setTitle(data.title || "");
@@ -84,12 +84,12 @@ export default function EventEdit() {
       formData.append("remove_photo_ids[]", String(id));
     });
 
-    const response = await fetch(`http://localhost:3000/events/${id}`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/events/${id}`, {
       method: "PATCH",
       body: formData // ←これが重要
     });
 
-    if (response.ok) {
+    if (res.ok) {
       navigate(`/events/${id}`);
     } else {
       alert("更新失敗（Railsログ見て）");
@@ -247,8 +247,7 @@ const styles: any = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    paddingTop: "100px",
-    padding: "20px",
+    padding: "100px 20px 20px 20px",
     flex: 1
   },
 

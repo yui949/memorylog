@@ -22,7 +22,7 @@ export default function EventNew() {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/people")
+    fetch(`${process.env.REACT_APP_API_URL}/people`)
       .then((res) => res.json())
       .then((data) => setPeople(data));
   }, []);
@@ -54,7 +54,7 @@ export default function EventNew() {
       formData.append("photos[]", photo);
     });
 
-    const res = await fetch("http://localhost:3000/events", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/events`, {
       method: "POST",
       body: formData,
     });
@@ -223,7 +223,8 @@ const styles: any = {
     marginLeft: "30px"
   },
   content: {
-    padding: "20px", 
+    padding: "20px",
+    puddingTop:"120px",
     paddingBottom: "120px",
     flex: 1
   },

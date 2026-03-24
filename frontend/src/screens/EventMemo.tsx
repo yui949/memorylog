@@ -12,7 +12,7 @@ export default function EventMemo() {
   const [memo, setMemo] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:3000/events/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then((res) => res.json())
       .then((data) => setMemo(data.memo));
   }, [id]);

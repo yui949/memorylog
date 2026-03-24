@@ -18,7 +18,7 @@ export default function EventList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3000/events")
+      fetch(`${process.env.REACT_APP_API_URL}/events`)
       .then(res => res.json())
       .then(data => setEvents(data))
   }, [])

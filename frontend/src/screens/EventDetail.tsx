@@ -27,9 +27,9 @@ export default function EventDetail() {
   const handleDelete = async () => {
   if (!window.confirm("このイベントを削除してもよろしいですか？")) return;
 
-  const res = await fetch(`http://localhost:3000/events/${id}`, {
-    method: "DELETE",
-  });
+ const res = await fetch(`${process.env.REACT_APP_API_URL}/events/${id}`, {
+  method: "DELETE",
+});
 
   if (res.ok) {
     navigate("/events");
@@ -40,7 +40,7 @@ export default function EventDetail() {
   
 
   useEffect(() => {
-    fetch(`http://localhost:3000/events/${id}`)
+    fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then(res => res.json())
       .then(data => setEvent(data));
       

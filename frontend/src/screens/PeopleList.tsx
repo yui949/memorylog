@@ -16,7 +16,7 @@ export default function PeopleList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3000/people")
+    fetch("${process.env.REACT_APP_API_URL}/people")
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
