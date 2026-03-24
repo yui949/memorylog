@@ -223,7 +223,7 @@ const styles: any = {
     marginLeft: "30px"
   },
   content: {
-    padding: "20px",
+    padding: "20px", 
     paddingBottom: "120px",
     flex: 1
   },

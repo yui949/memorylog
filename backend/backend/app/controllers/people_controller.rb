@@ -4,8 +4,13 @@ class PeopleController < ApplicationController
   end
 
   def show
-    person = Person.find(params[:id])
-    render json: person.as_json(include: { events: { only: [:id, :title, :date, :place] } })
+  person = Person.find(params[:id])
+  events = person.events
+
+  render json: {
+    person: person,
+    events: events
+  }
   end
 
   def create
