@@ -25,7 +25,7 @@ export default function PeopleNew() {
           group,
           mbti,
           blood_type: bloodType,
-          reliability,
+          reliability: String(reliability),
           other,
           next_topic: nextTopic, // Railsに送るデータ
         },
