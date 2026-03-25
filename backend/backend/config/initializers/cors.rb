@@ -1,6 +1,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'https://memorylog-frontend.vercel.app'
+    origins 'https://memorylog-frontend.vercel.app',
+            'https://memorylog-frontend-git-new-main-yui949s-projects.vercel.app'
 
     resource '*',
       headers: :any,
