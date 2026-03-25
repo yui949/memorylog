@@ -6,8 +6,6 @@ class CreatePeople < ActiveRecord::Migration[7.0]
       t.text :memo
 
       t.timestamps
-
-      t.references :person, null: false, foreign_key: true
     end
   end
 end
