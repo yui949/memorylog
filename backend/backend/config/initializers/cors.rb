@@ -7,7 +7,8 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'https://memorylog-frontend.vercel.app'   # 開発中は全部許可、公開時はドメイン指定にする
+    origins 'https://memorylog-frontend-ax7o21f15-yui949s-projects.vercel.app'
+
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head]

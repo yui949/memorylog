@@ -74,4 +74,3 @@ end
   def event_params
     params.permit(:title, :place, :memo, :date, photos: [], person_ids: [], remove_photo_ids: [])
   end
-end
