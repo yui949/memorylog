@@ -1,4 +1,4 @@
-class CreateEventPerson < ActiveRecord::Migration[7.0]
+class CreatePersonEvents < ActiveRecord::Migration[7.0]
   def change
     create_table :person_events do |t|
       t.references :person, null: false, foreign_key: true
