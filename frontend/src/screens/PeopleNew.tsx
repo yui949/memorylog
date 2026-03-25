@@ -16,7 +16,7 @@ export default function PeopleNew() {
   const [nextTopic, setNextTopic] = useState(""); // ステート追加
 
   const handleSubmit = async () => {
-    const res = await fetch("${process.env.REACT_APP_API_URL}/people", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/people`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

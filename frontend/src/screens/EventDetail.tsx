@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { X, Check, Camera, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, Camera, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import FloatingButton from "../components/FloatingButton";
 import { useNavigate, useParams } from "react-router-dom";
 
