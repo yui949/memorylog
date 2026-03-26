@@ -37,27 +37,30 @@ export default function EventEdit() {
 
 
   useEffect(() => {
+  // ⭐① 全員の人を取得（これが大事）
+  fetch(`${process.env.REACT_APP_API_URL}/people`)
+    .then((res) => res.json())
+    .then((data) => setPeople(data));
+
+  // ⭐② 編集中イベントのデータ取得
+  if (id) {
     fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then((res) => res.json())
-      .then((data) => setPeople(data));
+      .then((data) => {
+        setTitle(data.title || "");
+        setPlace(data.place || "");
+        setMemo(data.memo || "");
+        setDate(data.date || "");
 
-    if (id) {
-      fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setTitle(data.title || "");
-          setPlace(data.place || "");
-          setMemo(data.memo || "");
-          setDate(data.date || "");
+        // ⭐選択状態セット
+        if (data.people) {
+          setSelectedPeople(data.people.map((p: any) => p.id));
+        }
 
-          if (data.people) {
-            setSelectedPeople(data.people.map((p: any) => p.id));
-          }
-
-          setExistingPhotos(data.photos || []);
-        });
-    }
-  }, [id]);
+        setExistingPhotos(data.photos || []);
+      });
+  }
+}, [id]);
 
   const updateEvent = async () => {
   try {
