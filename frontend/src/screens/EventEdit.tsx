@@ -37,16 +37,21 @@ export default function EventEdit() {
 
 
   useEffect(() => {
-  // ⭐① 全員の人を取得（これが大事）
+  // ⭐① 全員の人を取得
   fetch(`${process.env.REACT_APP_API_URL}/people`)
     .then((res) => res.json())
-    .then((data) => setPeople(data));
+    .then((data) => {
+      console.log("people:", data); // ⭐追加
+      setPeople(data.people || data); // ⭐修正
+    });
 
   // ⭐② 編集中イベントのデータ取得
   if (id) {
     fetch(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("event:", data); // ⭐追加
+
         setTitle(data.title || "");
         setPlace(data.place || "");
         setMemo(data.memo || "");
